@@ -26,7 +26,11 @@
 
 ## **I. GIỚI THIỆU VÀ MỤC TIÊU** (2 trang)
 
+> **Tóm tắt:** Trình bày lý do thực hiện dự án, mục tiêu kỹ thuật và triển khai, phạm vi công việc, và phân công nhiệm vụ trong nhóm.
+
 ### 1.1. Đặt vấn đề
+
+> Giải thích vấn đề thực tế cần giải quyết, tại sao cần tự động hóa việc nhận diện linh kiện điện tử.
 
 **Nội dung:**
 - Bài toán nhận diện linh kiện điện tử trong thực tế
@@ -47,6 +51,8 @@ nhanh và chính xác nhất hiện nay, nhóm quyết định ứng dụng mode
 
 ### 1.2. Mục tiêu của nhóm
 
+> Nêu rõ 3 nhóm mục tiêu: kỹ thuật (độ chính xác, tốc độ), triển khai (code quality), và học tập (kiến thức thu được).
+
 **Liệt kê rõ ràng những gì NHÓM MUỐN LÀM:**
 
 ✅ **Mục tiêu kỹ thuật:**
@@ -65,6 +71,8 @@ nhanh và chính xác nhất hiện nay, nhóm quyết định ứng dụng mode
 - Làm việc nhóm và quản lý project
 
 ### 1.3. Phạm vi dự án
+
+> Xác định rõ công cụ, dữ liệu, ngôn ngữ lập trình và các sản phẩm đầu ra của dự án.
 
 **Nêu rõ:**
 - **Công cụ sử dụng:** YOLOv8 (Ultralytics)
@@ -96,10 +104,14 @@ Tóm tắt nội dung các phần tiếp theo (ngắn gọn).
 
 ## **II. TỔNG QUAN YOLOv8 VÀ DATASET** (2 trang) - *Ngắn gọn*
 
+> **Tóm tắt:** Giới thiệu ngắn gọn YOLOv8 là gì, tại sao nhóm chọn model này, và tổng quan về dataset sử dụng.
+
 > **Lưu ý:** Phần này KHÔNG cần viết dài dòng về lý thuyết. Chỉ giới thiệu 
 > ngắn gọn YOLOv8 là gì và dataset nhóm sử dụng thế nào.
 
 ### 2.1. Giới thiệu YOLOv8
+
+> Mô tả YOLOv8 một cách ngắn gọn, nhấn mạnh tại sao nhóm lựa chọn model này thay vì các model khác.
 
 **Viết ngắn gọn (0.5 trang):**
 
@@ -129,6 +141,8 @@ Input Image → [Backbone] → [Neck] → [Head] → Outputs
 ```
 
 ### 2.2. Dataset - All Components
+
+> Trình bày nguồn dataset, số lượng ảnh, cách chia train/val/test, 10 classes linh kiện, và đánh giá chất lượng dataset.
 
 **2.2.1. Nguồn và thống kê:**
 
@@ -185,9 +199,13 @@ Qua khảo sát, dataset có chất lượng tốt:
 
 ## **III. THIẾT KẾ VÀ TRIỂN KHAI HỆ THỐNG** (5-6 trang) ⭐
 
+> **Tóm tắt:** Mô tả chi tiết kiến trúc hệ thống, thiết kế code module, implementation details, challenges gặp phải và cách giải quyết.
+
 > **Đây là phần QUAN TRỌNG NHẤT** - Viết chi tiết những gì nhóm đã làm!
 
 ### 3.1. Tổng quan kiến trúc hệ thống
+
+> Trình bày sơ đồ tổng thể hệ thống nhóm xây dựng, từ dataset đến training, testing và deployment.
 
 **3.1.1. Sơ đồ tổng quát:**
 
@@ -231,6 +249,8 @@ Qua khảo sát, dataset có chất lượng tốt:
 ```
 
 ### 3.2. Thiết kế Module Code
+
+> Giải thích chi tiết cấu trúc module code, design principles áp dụng, và lý do thiết kế như vậy.
 
 > **Đây là ĐÓNG GÓP CHÍNH của nhóm** - Code architecture
 
@@ -348,7 +368,11 @@ ComponentDetector class với các lợi ích:
 
 ### 3.3. Implementation Details
 
+> Mô tả chi tiết cách nhóm implement 3 scripts chính: training, testing, và webcam detection, kèm features đặc biệt.
+
 **3.3.1. Training Script (train_detector.py):**
+
+> Trình bày các features nhóm thêm vào training script: CLI arguments, device handling, auto validation, plot generation.
 
 **Những gì nhóm implement:**
 
@@ -380,6 +404,8 @@ plot_training_results(results_dir)
 
 **3.3.2. Testing Script (test_detector.py):**
 
+> Giải thích batch testing, visualization options, và metrics reporting mà nhóm đã implement.
+
 **Nhóm implement các features:**
 
 ```
@@ -400,6 +426,8 @@ plot_training_results(results_dir)
 ```
 
 **3.3.3. Webcam Script (webcam_detector.py):**
+
+> Trình bày tính năng real-time detection qua webcam với performance monitoring, interactive controls, và visual enhancements.
 
 **Đây là tính năng DEMO THỰC TẾ nhóm xây dựng:**
 
@@ -445,6 +473,8 @@ plot_training_results(results_dir)
 
 ### 3.4. Documentation và Code Quality
 
+> Nhấn mạnh các nỗ lực của nhóm trong việc viết docstrings, README, comments để đảm bảo code quality.
+
 **Nhóm chú trọng vào:**
 
 1. **Docstrings đầy đủ:**
@@ -475,6 +505,8 @@ plot_training_results(results_dir)
 
 **3.5. Testing và Debugging Process:**
 
+> Mô tả development workflow và các công cụ nhóm sử dụng để test, debug và optimize code.
+
 **Quy trình nhóm thực hiện:**
 
 ```
@@ -495,7 +527,11 @@ plot_training_results(results_dir)
 
 ## **IV. KẾT QUẢ THỰC NGHIỆM** (3-4 trang)
 
+> **Tóm tắt:** Trình bày kết quả training (loss curves, metrics evolution), validation (confusion matrix, PR curves), testing (metrics trên test set), và real-time performance.
+
 ### 4.1. Kết quả Training
+
+> Phân tích quá trình training qua 100 epochs: loss curves giảm như thế nào, metrics evolution, có dấu hiệu overfitting không.
 
 **4.1.1. Training curves:**
 
@@ -542,6 +578,8 @@ Nhận xét:
 
 ### 4.2. Kết quả Validation
 
+> Phân tích kết quả validation qua confusion matrix, PR curves, F1-confidence curves để đánh giá chất lượng model.
+
 **4.2.1. Confusion Matrix:**
 
 ```
@@ -578,6 +616,8 @@ Nhận xét:
 
 ### 4.3. Kết quả Test
 
+> Báo cáo metrics chi tiết trên test set (367 ảnh chưa từng thấy), kết quả theo từng class, inference time.
+
 **4.3.1. Metrics trên Test Set:**
 
 ```
@@ -613,6 +653,8 @@ Nhận xét:
 
 ### 4.4. Kết quả Visualization
 
+> Trình bày các ví dụ detection thành công, phân bố labels, để minh họa trực quan chất lượng model.
+
 **4.4.1. Ví dụ Detection thành công:**
 
 ```
@@ -638,6 +680,8 @@ Nhận xét:
 
 ### 4.5. Real-time Performance
 
+> Đo đạc performance của webcam detection: FPS trên GPU/CPU, latency, resolution, để chứng minh khả năng real-time.
+
 **4.5.1. Webcam Detection:**
 
 ```
@@ -661,6 +705,8 @@ Nhận xét:
 
 ### 4.6. So sánh với các Model khác
 
+> So sánh YOLOv8n với các variants khác (s, m) về mAP, số parameters, tốc độ để justify lựa chọn của nhóm.
+
 ```
 [Bảng 4.5] So sánh YOLOv8 variants
 
@@ -682,7 +728,11 @@ Nhận xét:
 
 ## **V. ĐÁNH GIÁ VÀ KẾT LUẬN** (2-3 trang)
 
+> **Tóm tắt:** Đánh giá ưu nhược điểm, tổng kết những gì đã đạt được, hướng phát triển, đóng góp khoa học/thực tiễn, và bài học kinh nghiệm.
+
 ### 5.1. Đánh giá chung
+
+> Phân tích ưu/nhược điểm của hệ thống dựa trên kết quả thực nghiệm, nhấn mạnh điểm mạnh và hạn chế cần cải thiện.
 
 **5.1.1. Ưu điểm:**
 
@@ -719,6 +769,8 @@ Nhận xét:
 
 ### 5.2. Kết luận
 
+> Tổng kết những gì nhóm đã hoàn thành, kiến thức học được, sản phẩm tạo ra, và tính ứng dụng thực tế.
+
 **5.2.1. Những gì đã đạt được:**
 
 1. ✅ **Hoàn thành mục tiêu đề ra:**
@@ -754,6 +806,8 @@ Nhận xét:
 - Inventory management
 
 ### 5.3. Hướng phát triển
+
+> Đề xuất các hướng cải thiện model, mở rộng chức năng, và nâng cao trải nghiệm người dùng trong tương lai.
 
 **5.3.1. Cải thiện model:**
 
@@ -806,6 +860,8 @@ Nhận xét:
 
 ### 5.4. Đóng góp của đề tài
 
+> Nêu rõ đóng góp về mặt khoa học (methodology, pipeline) và thực tiễn (tool sử dụng được, open-source).
+
 **5.4.1. Đóng góp về mặt khoa học:**
 - Áp dụng thành công YOLOv8 cho bài toán domain-specific
 - Nghiên cứu hyperparameter tuning cho component detection
@@ -817,6 +873,8 @@ Nhận xét:
 - Documentation chi tiết giúp người khác học tập
 
 ### 5.5. Bài học kinh nghiệm
+
+> Chia sẻ những bài học về kỹ thuật (data quality, augmentation...) và quy trình (workflow, documentation...).
 
 **5.5.1. Về kỹ thuật:**
 - Data quality quan trọng hơn model complexity
@@ -846,6 +904,8 @@ góp phần tăng năng suất và đảm bảo chất lượng sản phẩm.
 ---
 
 ## **VI. TÀI LIỆU THAM KHẢO**
+
+> **Tóm tắt:** Liệt kê đầy đủ các papers, documentation, dataset sources, và online resources đã tham khảo trong quá trình thực hiện.
 
 ### Sắp xếp theo thứ tự ABC:
 
