@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 10
+names: ['Capacitor', 'Ceramic Capacitor', 'Diode', 'IC', 'LED', 'Potentiometer', 'Resistor', 'Transformer', 'Trigger Button', 'Voltage Regulator']
+
+roboflow:
+  workspace: ned-university-of-engineering-and-technology-5f8dq
+  project: all-components
+  version: 4
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/ned-university-of-engineering-and-technology-5f8dq/all-components/dataset/4
