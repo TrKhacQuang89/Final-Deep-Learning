@@ -1,20 +1,22 @@
 # HƯỚNG DẪN LÀM BÁO CÁO DỰ ÁN
 # Component Detection System với YOLOv8
+## (Tập trung vào TRIỂN KHAI và ĐÓNG GÓP của Nhóm)
 
 ---
 
-## 📋 CẤU TRÚC BÁO CÁO ĐẦY ĐỦ
+## 📋 CẤU TRÚC BÁO CÁO MỚI (Nghiêng về Implementation)
 
 ### **Trang bìa + Mục lục**
-### **I. GIỚI THIỆU** (2-3 trang)
-### **II. CƠ SỞ LÝ THUYẾT** (3-4 trang)
-### **III. PHƯƠNG PHÁP THỰC HIỆN** (4-5 trang)
-### **IV. KẾT QUẢ THỰC NGHIỆM** (3-4 trang)
-### **V. ĐÁNH GIÁ VÀ KẾT LUẬN** (2-3 trang)
-### **VI. TÀI LIỆU THAM KHẢO**
+### **I. GIỚI THIỆU VÀ MỤC TIÊU** (2 trang)
+### **II. TỔNG QUAN YOLOv8 VÀ DATASET** (2 trang) - *Ngắn gọn, chỉ nêu cái nhóm sử dụng*
+### **III. THIẾT KẾ VÀ TRIỂN KHAI HỆ THỐNG** (5-6 trang) - *⭐ PHẦN QUAN TRỌNG NHẤT*
+### **IV. QUÁ TRÌNH TRAINING VÀ FINE-TUNING** (3-4 trang) - *Nhóm đã làm gì*
+### **V. TESTING VÀ ĐÁNH GIÁ** (3-4 trang) - *Kết quả nhóm đạt được*
+### **VI. KẾT LUẬN VÀ ĐÓNG GÓP** (2 trang)
+### **VII. TÀI LIỆU THAM KHẢO**
 ### **PHỤ LỤC**
 
-**Tổng số trang:** 15-20 trang
+**Tổng số trang:** 17-20 trang
 
 ---
 
@@ -22,374 +24,472 @@
 
 ---
 
-## **I. GIỚI THIỆU** (2-3 trang)
+## **I. GIỚI THIỆU VÀ MỤC TIÊU** (2 trang)
 
 ### 1.1. Đặt vấn đề
 
 **Nội dung:**
-- Giới thiệu về bài toán nhận diện linh kiện điện tử
-- Tầm quan trọng trong ngành công nghiệp điện tử
-- Thách thức: Nhiều loại linh kiện, kích thước nhỏ, cần độ chính xác cao
+- Bài toán nhận diện linh kiện điện tử trong thực tế
+- Tại sao cần tự động hóa (tiết kiệm thời gian, giảm sai sót)
+- Thách thức khi triển khai thực tế
 
-**Ví dụ viết:**
+**Ví dụ viết (góc độ thực tế):**
 ```
-Trong ngành công nghiệp điện tử hiện đại, việc nhận dạng và phân loại linh 
-kiện trên bo mạch là một nhiệm vụ quan trọng nhưng tốn nhiều thời gian khi 
-thực hiện thủ công. Với sự phát triển của Deep Learning, đặc biệt là các 
-thuật toán Object Detection, việc tự động hóa quá trình này trở nên khả thi 
-hơn bao giờ hết...
+Trong quá trình sản xuất và kiểm tra bo mạch điện tử, việc nhận dạng 
+và phân loại linh kiện thủ công là một công đoạn tốn nhiều thời gian 
+và dễ phát sinh lỗi. Nhóm chúng em nhận thấy nhu cầu cần một công cụ 
+tự động để giải quyết vấn đề này. 
+
+Với sự phát triển của YOLOv8 - một trong những model Object Detection 
+nhanh và chính xác nhất hiện nay, nhóm quyết định ứng dụng model này 
+để xây dựng một hệ thống hoàn chỉnh có khả năng nhận diện real-time.
 ```
 
-### 1.2. Mục tiêu đề tài
+### 1.2. Mục tiêu của nhóm
 
-**Liệt kê rõ ràng:**
-- ✅ Xây dựng hệ thống nhận diện tự động các linh kiện điện tử trên bo mạch
-- ✅ Sử dụng YOLOv8 để phát hiện và phân loại 10 loại linh kiện
-- ✅ Đạt độ chính xác cao (mAP@0.5 > 90%)
-- ✅ Triển khai real-time detection qua webcam
+**Liệt kê rõ ràng những gì NHÓM MUỐN LÀM:**
 
-### 1.3. Phạm vi nghiên cứu
+✅ **Mục tiêu kỹ thuật:**
+- Xây dựng hệ thống hoàn chỉnh từ training đến deployment
+- Đạt độ chính xác cao (mAP@0.5 > 90%)
+- Tốc độ real-time (>25 FPS)
+
+✅ **Mục tiêu triển khai:**
+- Code module hóa, dễ bảo trì và mở rộng
+- Hỗ trợ cả batch processing và real-time detection
+- Giao diện dễ sử dụng (command-line scripts)
+
+✅ **Mục tiêu học tập:**
+- Nắm vững quy trình training deep learning model
+- Hiểu cách deploy model vào ứng dụng thực tế
+- Làm việc nhóm và quản lý project
+
+### 1.3. Phạm vi dự án
 
 **Nêu rõ:**
-- **Dataset:** 3560 ảnh với 10 classes linh kiện
-- **Model:** YOLOv8 (Nano, Small, Medium)
-- **Ứng dụng:** Batch processing và real-time detection
+- **Công cụ sử dụng:** YOLOv8 (Ultralytics)
+- **Dataset:** 3560 ảnh với 10 classes linh kiện (từ Roboflow)
+- **Ngôn ngữ:** Python 3.10+
+- **Sản phẩm:** Module code + Scripts + Documentation
 
-### 1.4. Bố cục báo cáo
-
-Tóm tắt nội dung các chương tiếp theo.
-
----
-
-## **II. CƠ SỞ LÝ THUYẾT** (3-4 trang)
-
-### 2.1. Object Detection
-
-**Nội dung:**
-- Định nghĩa Object Detection
-- Phân biệt với Image Classification
-- Các thành phần: Classification + Localization
-
-**Hình ảnh minh họa:**
-```
-[Hình 2.1] So sánh Classification vs Detection
-[Input Image] → [Classification: "Resistor"] 
-              → [Detection: Box + "Resistor at (x,y,w,h)"]
-```
-
-### 2.2. YOLO (You Only Look Once)
-
-**2.2.1. Lịch sử phát triển:**
-- YOLOv1 (2016) → YOLOv8 (2023)
-- Ưu điểm: Tốc độ nhanh, real-time capable
-
-**2.2.2. Kiến trúc YOLOv8:**
-
-**Viết mô tả:**
-```
-YOLOv8 gồm 3 thành phần chính:
-
-1. Backbone (CSPDarknet):
-   - Trích xuất features từ ảnh đầu vào
-   - Sử dụng Cross-Stage Partial connections
-   
-2. Neck (PANet):
-   - Kết hợp features ở nhiều scale khác nhau
-   - Path Aggregation Network để tăng cường thông tin
-   
-3. Head (Decoupled Detection Head):
-   - Dự đoán bounding boxes
-   - Phân loại objects
-```
-
-**Vẽ sơ đồ:**
-```
-[Hình 2.2] Kiến trúc YOLOv8
-
-Input Image (640x640)
-    ↓
-[Backbone: CSPDarknet]
-    ↓
-[Neck: PANet]
-    ↓
-[Head: Detection]
-    ↓
-Output: Boxes + Classes + Confidences
-```
-
-### 2.3. Các Metrics đánh giá
-
-**2.3.1. Precision và Recall:**
-
-**Công thức:**
-```
-Precision = TP / (TP + FP)
-Recall = TP / (TP + FN)
-```
-
-**Giải thích:**
-- TP (True Positive): Phát hiện đúng
-- FP (False Positive): Phát hiện sai (báo động giả)
-- FN (False Negative): Bỏ sót
-
-**2.3.2. IoU (Intersection over Union):**
-
-**Công thức:**
-```
-IoU = Area of Overlap / Area of Union
-```
-
-**Hình minh họa:**
-```
-[Hình 2.3] Minh họa IoU
-[Ground Truth Box]  [Predicted Box]
-         ↓                ↓
-      [Overlap Area]
-      ────────────
-      [Union Area]
-```
-
-**2.3.3. mAP (mean Average Precision):**
-
-**Giải thích:**
-```
-mAP@0.5: Trung bình AP của tất cả classes với IoU threshold = 0.5
-mAP@0.5:0.95: Trung bình AP với IoU từ 0.5 đến 0.95 (step 0.05)
-```
-
-### 2.4. Loss Functions
-
-**2.4.1. Box Loss:**
-- Đo sai số vị trí bounding box
-- Sử dụng CIoU (Complete IoU) loss
-
-**2.4.2. Class Loss:**
-- Cross-entropy loss cho classification
-- Đo sai số phân loại
-
-**2.4.3. DFL Loss (Distribution Focal Loss):**
-- Cải thiện độ chính xác boundary regression
-
----
-
-## **III. PHƯƠNG PHÁP THỰC HIỆN** (4-5 trang)
-
-### 3.1. Tổng quan hệ thống
-
-**Sơ đồ khối:**
-```
-[Hình 3.1] Sơ đồ tổng quan hệ thống
-
-┌─────────────┐       ┌─────────────┐       ┌─────────────┐
-│   Dataset   │   →   │   Training  │   →   │   Trained   │
-│  Roboflow   │       │   YOLOv8    │       │    Model    │
-└─────────────┘       └─────────────┘       └─────────────┘
-                                                     ↓
-                             ┌───────────────────────┴────────────┐
-                             ↓                                    ↓
-                   ┌──────────────────┐              ┌──────────────────┐
-                   │  Test Images     │              │  Webcam Stream   │
-                   │  Evaluation      │              │  Real-time       │
-                   └──────────────────┘              └──────────────────┘
-```
-
-### 3.2. Dataset
-
-**3.2.1. Nguồn dữ liệu:**
-- **Nguồn:** Roboflow Universe
-- **Link:** https://universe.roboflow.com/ned-university.../all-components/dataset/4
-- **License:** CC BY 4.0
-
-**3.2.2. Thống kê dataset:**
-
-**Tạo bảng:**
-```
-[Bảng 3.1] Thống kê Dataset
-
-| Split      | Số lượng ảnh | Tỷ lệ % |
-|------------|--------------|---------|
-| Training   | 2485         | 69.8%   |
-| Validation | 708          | 19.9%   |
-| Test       | 367          | 10.3%   |
-| **Tổng**   | **3560**     | **100%**|
-```
-
-**3.2.3. 10 Classes linh kiện:**
-
-```
-[Bảng 3.2] Danh sách Classes
-
-| STT | Class Name         | Mô tả                  |
-|-----|--------------------|------------------------|
-| 0   | Capacitor          | Tụ điện                |
-| 1   | Ceramic Capacitor  | Tụ gốm                 |
-| 2   | Diode              | Điốt                   |
-| 3   | IC                 | Vi mạch tích hợp       |
-| 4   | LED                | Đèn LED                |
-| 5   | Potentiometer      | Biến trở               |
-| 6   | Resistor           | Điện trở               |
-| 7   | Transformer        | Biến áp                |
-| 8   | Trigger Button     | Nút bấm                |
-| 9   | Voltage Regulator  | Bộ ổn áp               |
-```
-
-**3.2.4. Format annotation:**
-- **Format:** YOLO (TXT files)
-- **Cấu trúc:** `class_id x_center y_center width height` (normalized)
+### 1.4. Phân công công việc nhóm (Nếu có)
 
 **Ví dụ:**
 ```
-0 0.523 0.456 0.120 0.089
-3 0.712 0.234 0.056 0.078
+[Bảng 1.1] Phân công công việc
+
+| Thành viên | Công việc chính                           |
+|------------|-------------------------------------------|
+| Thành viên A | Dataset preparation, Training            |
+| Thành viên B | Code module development, Testing         |
+| Thành viên C | Webcam implementation, Documentation     |
+| Toàn nhóm   | Testing, Debugging, Report writing       |
 ```
 
-### 3.3. Cài đặt môi trường
+*(Nếu làm cá nhân, bỏ qua phần này hoặc viết "Dự án thực hiện bởi...")*
 
-**3.3.1. Phần cứng:**
+### 1.5. Bố cục báo cáo
+
+Tóm tắt nội dung các phần tiếp theo (ngắn gọn).
+
+---
+
+## **II. TỔNG QUAN YOLOv8 VÀ DATASET** (2 trang) - *Ngắn gọn*
+
+> **Lưu ý:** Phần này KHÔNG cần viết dài dòng về lý thuyết. Chỉ giới thiệu 
+> ngắn gọn YOLOv8 là gì và dataset nhóm sử dụng thế nào.
+
+### 2.1. Giới thiệu YOLOv8
+
+**Viết ngắn gọn (0.5 trang):**
+
 ```
-- CPU: [Ghi cụ thể, ví dụ: Intel Core i7-10700]
-- RAM: [Ghi cụ thể, ví dụ: 16GB DDR4]
-- GPU: [Ghi cụ thể, ví dụ: NVIDIA RTX 3060 6GB hoặc "Không có"]
-- Storage: SSD
+YOLOv8 là phiên bản mới nhất của YOLO (You Only Look Once), được phát 
+triển bởi Ultralytics vào năm 2023. Đây là một trong những model Object 
+Detection tiên tiến nhất hiện nay, nổi bật với:
+
+- Tốc độ nhanh: Phù hợp cho real-time applications
+- Độ chính xác cao: State-of-the-art trên nhiều benchmarks
+- Dễ sử dụng: API đơn giản, documentation đầy đủ
+- Nhiều variants: n/s/m/l/x cho các nhu cầu khác nhau
+
+Nhóm chọn YOLOv8 vì những lý do sau:
+- ✅ Open-source và active development
+- ✅ Có pretrained weights (COCO dataset)
+- ✅ Hỗ trợ đầy đủ cho training custom dataset
+- ✅ Export sang nhiều format (ONNX, TFLite...)
 ```
 
-**3.3.2. Phần mềm:**
+**Sơ đồ đơn giản:**
 ```
-- OS: Windows 11
-- Python: 3.10+
-- PyTorch: 2.x
-- CUDA: 11.8 (nếu có GPU)
-- Ultralytics: 8.4.14
+[Hình 2.1] Kiến trúc YOLOv8 (High-level)
+
+Input Image → [Backbone] → [Neck] → [Head] → Outputs
+            (Features)   (Fusion)  (Detect)  (Boxes+Classes)
 ```
 
-**3.3.3. Thư viện chính:**
+### 2.2. Dataset - All Components
+
+**2.2.1. Nguồn và thống kê:**
+
+```
+[Bảng 2.1] Thông tin Dataset
+
+| Thông tin        | Chi tiết                                |
+|------------------|-----------------------------------------|
+| Nguồn            | Roboflow Universe (NED University)      |
+| License          | CC BY 4.0                               |
+| Tổng số ảnh      | 3560 ảnh                                |
+| Training         | 2485 ảnh (69.8%)                        |
+| Validation       | 708 ảnh (19.9%)                         |
+| Test             | 367 ảnh (10.3%)                         |
+| Số classes       | 10 loại linh kiện                       |
+| Format           | YOLO (TXT annotations)                  |
+| Image size       | Đa dạng (resize về 640x640 khi train)   |
+```
+
+**2.2.2. 10 Classes linh kiện:**
+
+```
+[Bảng 2.2] Danh sách Classes
+
+| ID | Class Name         | Ví dụ hình dạng           |
+|----|--------------------|---------------------------|
+| 0  | Capacitor          | Hình trụ, 2 chân          |
+| 1  | Ceramic Capacitor  | Hình trụ nhỏ, màu vàng    |
+| 2  | Diode              | Hình trụ, có vạch         |
+| 3  | IC                 | Hình chữ nhật, nhiều chân |
+| 4  | LED                | Hình trụ, có đầu bóng     |
+| 5  | Potentiometer      | Hình tròn, có núm xoay    |
+| 6  | Resistor           | Hình trụ, vạch màu        |
+| 7  | Transformer        | Hình khối, cuộn dây       |
+| 8  | Trigger Button     | Hình vuông, nút bấm       |
+| 9  | Voltage Regulator  | IC dạng TO-220            |
+```
+
+**2.2.3. Chất lượng dataset:**
+
+**Nhóm đã kiểm tra:**
+- ✅ Labels: Kiểm tra annotations có chính xác không
+- ✅ Balance: Phân bố các classes có cân bằng không
+- ✅ Quality: Chất lượng ảnh có tốt không
+
+```
+Qua khảo sát, dataset có chất lượng tốt:
+- Annotations chính xác, bounding boxes khít với objects
+- Phân bố classes tương đối cân bằng
+- Chất lượng ảnh đa dạng về góc chụp và điều kiện ánh sáng
+```
+
+---
+
+## **III. THIẾT KẾ VÀ TRIỂN KHAI HỆ THỐNG** (5-6 trang) ⭐
+
+> **Đây là phần QUAN TRỌNG NHẤT** - Viết chi tiết những gì nhóm đã làm!
+
+### 3.1. Tổng quan kiến trúc hệ thống
+
+**3.1.1. Sơ đồ tổng quát:**
+
+```
+[Hình 3.1] Kiến trúc hệ thống do nhóm xây dựng
+
+┌─────────────────────────────────────────────────────────────┐
+│                    HỆ THỐNG NHÓM XÂY DỰNG                    │
+└─────────────────────────────────────────────────────────────┘
+
+┌─────────────┐       ┌──────────────────┐       ┌─────────────┐
+│   Dataset   │       │   TRAINING       │       │   Trained   │
+│  (Roboflow) │  ───► │   - Data Aug     │  ───► │    Model    │
+│             │       │   - Fine-tuning  │       │   (best.pt) │
+└─────────────┘       └──────────────────┘       └─────────────┘
+                                                         │
+                          ┌──────────────────────────────┴────┐
+                          │                                   │
+                          ▼                                   ▼
+              ┌──────────────────────┐         ┌──────────────────────┐
+              │   TESTING MODULE     │         │   DEPLOYMENT MODULE  │
+              │   - Batch test       │         │   - Webcam stream    │
+              │   - Metrics eval     │         │   - Real-time UI     │
+              │   - Visualization    │         │   - Interactive      │
+              └──────────────────────┘         └──────────────────────┘
+```
+
+**3.1.2. Stack công nghệ:**
+
+```
+[Bảng 3.1] Technology Stack
+
+| Layer            | Công nghệ/Tool                          |
+|------------------|-----------------------------------------|
+| Deep Learning    | PyTorch, YOLOv8 (Ultralytics)           |
+| Computer Vision  | OpenCV, Pillow                          |
+| Data Processing  | NumPy, Pandas                           |
+| Visualization    | Matplotlib                              |
+| Development      | Python 3.10, Git, GitHub                |
+| Hardware         | [GPU/CPU cụ thể bạn dùng]              |
+```
+
+### 3.2. Thiết kế Module Code
+
+> **Đây là ĐÓNG GÓP CHÍNH của nhóm** - Code architecture
+
+**3.2.1. Cấu trúc module:**
+
+```
+[Hình 3.2] Code Architecture do nhóm thiết kế
+
+learn_final/
+│
+├── component_detector.py (666 dòng)  ◄─── CORE MODULE
+│   ├── Class: ComponentDetector
+│   │     ├── __init__()         # Khởi tạo model
+│   │     ├── train()            # Training logic
+│   │     ├── predict()          # Inference
+│   │     ├── validate()         # Validation
+│   │     └── visualize()        # Visualization
+│   │
+│   └── Class: WebcamDetector
+│         ├── __init__()         # Load model
+│         └── run()              # Real-time detection
+│
+├── train_detector.py (321 dòng)     ◄─── TRAINING SCRIPT
+│   └── CLI để train với args
+│
+├── test_detector.py (185 dòng)      ◄─── TESTING SCRIPT
+│   └── CLI để test on batch
+│
+└── webcam_detector.py (72 dòng)     ◄─── WEBCAM SCRIPT
+    └── CLI để chạy webcam
+```
+
+**3.2.2. Design Principles:**
+
+**Nhóm áp dụng các nguyên tắc:**
+
+1. **Modularity (Module hóa):**
+   - Core logic tách riêng trong `ComponentDetector` class
+   - Scripts chỉ là wrapper đơn giản
+   - Dễ maintain và extend
+
+2. **Reusability (Tái sử dụng):**
+   - Một class `ComponentDetector` cho cả train/test/predict
+   - Không duplicate code
+   - DRY principle
+
+3. **User-friendly:**
+   - CLI scripts với argparse
+   - Clear documentation
+   - Helpful error messages
+
+4. **Flexibility:**
+   - Support nhiều YOLOv8 variants (n/s/m/l/x)
+   - Customizable hyperparameters
+   - Easy to export different formats
+
+**3.2.3. Chi tiết ComponentDetector class:**
+
 ```python
-ultralytics==8.4.14   # YOLOv8
-opencv-python         # Computer vision
-matplotlib            # Visualization
-pandas                # Data processing
+class ComponentDetector:
+    """
+    ĐÓNG GÓP CHÍNH: Core Detection Engine
+    
+    Nhóm thiết kế class này để:
+    - Wrap YOLOv8 API với interface đơn giản hơn
+    - Thêm các utility functions (visualize, plot...)
+    - Quản lý training/testing workflow
+    """
+    
+    def __init__(self, model_type='n', pretrained=True):
+        """
+        Khởi tạo model với pretrained weights
+        
+        Nhóm chọn pretrained=True vì:
+        - Transfer learning hiệu quả hơn train from scratch
+        - COCO weights là good starting point
+        - Tiết kiệm thời gian training
+        """
+        pass
+    
+    def train(self, data_yaml, epochs, batch, ...):
+        """
+        Training pipeline
+        
+        Nhóm implement:
+        - Data loading từ YAML config
+        - Custom augmentation settings
+        - Automatic checkpoint saving
+        - Logging và visualization
+        """
+        pass
 ```
 
-### 3.4. Cấu trúc code
-
-**3.4.1. Kiến trúc module:**
-
+**Giải thích tại sao thiết kế như vậy:**
 ```
-[Hình 3.2] Sơ đồ module
+Thay vì gọi trực tiếp YOLOv8 API phức tạp, nhóm wrap lại trong 
+ComponentDetector class với các lợi ích:
 
-component_detector.py (CORE MODULE)
-    │
-    ├─── ComponentDetector (Class)
-    │       ├─── train()
-    │       ├─── predict()
-    │       ├─── validate()
-    │       └─── visualize_predictions()
-    │
-    └─── WebcamDetector (Class)
-            └─── run()
+1. Interface đơn giản hơn:
+   detector.train(...)  # Dễ hiểu
+   vs
+   model = YOLO(...)    # Phức tạp hơn
+   model.train(...)
 
-         ↓ ↓ ↓ SỬ DỤNG BỞI ↓ ↓ ↓
+2. Thêm custom logic:
+   - Tự động generate colors cho classes
+   - Tự động plot training results
+   - Enhanced visualization
 
-train_detector.py    test_detector.py    webcam_detector.py
-   (Training)           (Testing)         (Real-time)
+3. Maintains state:
+   - Class names, colors
+   - Model config
+   - Training history
 ```
 
-**3.4.2. Files quan trọng:**
+### 3.3. Implementation Details
 
-```
-[Bảng 3.3] Mô tả các files code
+**3.3.1. Training Script (train_detector.py):**
 
-| File                    | Dòng code | Chức năng                           |
-|-------------------------|-----------|-------------------------------------|
-| component_detector.py   | 666       | Module core chứa classes chính      |
-| train_detector.py       | 321       | Script training với command line    |
-| test_detector.py        | 185       | Script testing trên test set        |
-| webcam_detector.py      | 72        | Script real-time webcam detection   |
-| requirements.txt        | 46        | Dependencies                        |
-| data.yaml               | 13        | Cấu hình dataset                    |
-```
+**Những gì nhóm implement:**
 
-### 3.5. Quá trình Training
+```python
+# Nhóm thiết kế CLI với argparse để dễ sử dụng
+parser.add_argument('--model', choices=['n','s','m','l','x'])
+parser.add_argument('--epochs', type=int, default=100)
+parser.add_argument('--batch', type=int, default=16)
+# ... và nhiều args khác
 
-**3.5.1. Cấu hình training:**
+# Nhóm thêm device handling thông minh
+device = args.device
+if device.lower() != 'cpu':
+    try:
+        device = int(device)  # Convert '0' → 0
+    except ValueError:
+        device = 'cpu'  # Fallback
 
-```
-[Bảng 3.4] Hyperparameters
-
-| Tham số              | Giá trị    | Mô tả                        |
-|----------------------|------------|------------------------------|
-| Model                | YOLOv8n    | Nano (fastest)               |
-| Epochs               | 100        | Số vòng lặp training         |
-| Batch size           | 16         | Số ảnh/batch                 |
-| Image size           | 640x640    | Kích thước input             |
-| Learning rate (lr0)  | 0.01       | LR ban đầu                   |
-| Learning rate (lrf)  | 0.01       | LR cuối = lr0 * lrf          |
-| Patience             | 50         | Early stopping patience      |
-| Device               | GPU (0)    | CUDA device                  |
-| Workers              | 0          | DataLoader workers           |
+# Nhóm tự động generate training analysis
+plot_training_results(results_dir)
 ```
 
-**3.5.2. Data Augmentation:**
+**Các tính năng đặc biệt nhóm thêm vào:**
+- ✅ Tự động validate sau khi train
+- ✅ Generate training plots
+- ✅ Print summary rõ ràng
+- ✅ Handle errors gracefully
+- ✅ Support resume training
+
+**3.3.2. Testing Script (test_detector.py):**
+
+**Nhóm implement các features:**
 
 ```
-[Bảng 3.5] Augmentation Parameters
+1. Batch Testing:
+   - Test trên toàn bộ folder images
+   - Tự động count detections
+   - Phân tích class distribution
 
-| Kỹ thuật      | Giá trị | Mô tả                          |
-|---------------|---------|--------------------------------|
-| Horizontal Flip| 0.5    | Lật ngang 50%                  |
-| Mosaic        | 1.0     | Ghép 4 ảnh thành 1             |
-| HSV-H         | 0.015   | Điều chỉnh Hue                 |
-| HSV-S         | 0.7     | Điều chỉnh Saturation          |
-| HSV-V         | 0.4     | Điều chỉnh Value (brightness)  |
-| Translation   | 0.1     | Dịch chuyển ảnh                |
-| Scale         | 0.5     | Scale augmentation             |
+2. Visualization:
+   - Option để visualize predictions
+   - Save kết quả ra file
+   - Matplotlib-based plots
+
+3. Metrics Reporting:
+   - In ra số lượng detections
+   - Class distribution per image
+   - Clear summary sau khi test
 ```
 
-**3.5.3. Loss Functions:**
+**3.3.3. Webcam Script (webcam_detector.py):**
+
+**Đây là tính năng DEMO THỰC TẾ nhóm xây dựng:**
+
+**Features nhóm implement:**
+
+1. **Real-time Performance Monitoring:**
+   ```python
+   # Display FPS, Detection count, Confidence threshold
+   info_text = [
+       f"FPS: {current_fps:.1f}",
+       f"Detections: {detection_count}",
+       f"Conf: {self.conf_threshold:.2f}"
+   ]
+   ```
+
+2. **Interactive Controls:**
+   ```
+   Nhóm thiết kế keyboard controls:
+   - 'q': Quit
+   - 's': Save current frame
+   - 'p': Pause/Resume
+   - '+/-': Adjust confidence threshold
+   ```
+
+3. **Visual Enhancements:**
+   - Colored bounding boxes per class
+   - Labels với confidence scores
+   - Info overlay
+   - Frame counter
+
+**Challenges nhóm gặp và giải quyết:**
 
 ```
-[Bảng 3.6] Loss Weights
+[Bảng 3.2] Challenges trong Implementation
 
-| Loss Type    | Weight | Mục đích                       |
-|--------------|--------|--------------------------------|
-| Box Loss     | 7.5    | Localization accuracy          |
-| Class Loss   | 0.5    | Classification accuracy        |
-| DFL Loss     | 1.5    | Distribution Focal Loss        |
+| Vấn đề                    | Giải pháp của nhóm              |
+|---------------------------|---------------------------------|
+| FPS thấp khi dùng CPU     | Optimize inference, reduce size |
+| Webcam lag                | Async processing, frame skip    |
+| Bounding box vẽ không đẹp | Custom draw với OpenCV          |
+| Hotkeys không hoạt động   | Use cv.waitKey() đúng cách      |
 ```
 
-**3.5.4. Lệnh training:**
+### 3.4. Documentation và Code Quality
 
-```bash
-python train_detector.py \
-    --model n \
-    --epochs 100 \
-    --batch 16 \
-    --imgsz 640 \
-    --device 0 \
-    --patience 50 \
-    --lr0 0.01 \
-    --save-period 10
+**Nhóm chú trọng vào:**
+
+1. **Docstrings đầy đủ:**
+   ```python
+   def train(self, data_yaml, epochs, ...):
+       """
+       Train the component detector
+       
+       Args:
+           data_yaml: Path to data.yaml
+           epochs: Number of epochs
+           ...
+       
+       Returns:
+           Training results
+       """
+   ```
+
+2. **README.md chi tiết:**
+   - Installation instructions
+   - Usage examples
+   - Troubleshooting guide
+
+3. **Comments trong code:**
+   - Giải thích logic phức tạp
+   - Note các edge cases
+   - TODO cho future improvements
+
+**3.5. Testing và Debugging Process:**
+
+**Quy trình nhóm thực hiện:**
+
+```
+[Hình 3.3] Development Workflow
+
+1. Code → 2. Unit Test → 3. Integration → 4. Debug → 5. Refactor
+   ↑                                                          |
+   └──────────────────────────────────────────────────────────┘
 ```
 
-### 3.6. Evaluation
-
-**3.6.1. Test trên test set:**
-
-```bash
-python test_detector.py \
-    --weights runs/detect/.../best.pt \
-    --source test/images \
-    --conf 0.25 \
-    --save
-```
-
-**3.6.2. Real-time webcam:**
-
-```bash
-python webcam_detector.py \
-    --weights runs/detect/.../best.pt \
-    --conf 0.5
-```
+**Các công cụ sử dụng:**
+- Git cho version control
+- GitHub cho collaboration
+- Print debugging
+- PyTorch profiler (nếu cần optimize)
 
 ---
 
